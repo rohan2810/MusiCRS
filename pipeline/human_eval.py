@@ -16,22 +16,21 @@ def extract_urls(text):
 
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input",  "-i", required=True, help="Input JSONL file")
-    parser.add_argument("--output", "-o", required=True, help="Output JSONL file for annotations")
-    return parser.parse_args()
+# def parse_args():
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("--input",  "-i", required=True, help="Input JSONL file")
+#     parser.add_argument("--output", "-o", required=True, help="Output JSONL file for annotations")
+#     return parser.parse_args()
 
 def main():
-    args = parse_args()
+    data = load_data('music_gagan.jsonl')
+    total = len(data)
     output_filename = st.sidebar.text_input(
         "Output JSONL filename",
-        value=args.output,
+        value="annotations.jsonl",   
         help="Enter the filename (or path) where you'd like to save annotations",
         key="output_filename"
     )    
-    data = load_data(args.input)
-    total = len(data)
 
     # Sidebar: slice
     st.sidebar.title("Data slice")
