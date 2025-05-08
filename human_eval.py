@@ -23,7 +23,7 @@ def extract_urls(text):
 #     return parser.parse_args()
 
 def main():
-    data = load_data('music_gagan.jsonl')
+    data = load_data('all_data.jsonl')
     total = len(data)
     output_filename = st.sidebar.text_input(
         "Output JSONL filename",
