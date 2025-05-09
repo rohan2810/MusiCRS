@@ -74,7 +74,11 @@ def main():
         "pop culture":   "Popular culture post",
         "other":         "Other post"
     }
+
     raw_bucket = sample.get("bucket", "").lower().replace("_", " ")
+    gpt_suggestion = bucket_map.get(raw_bucket, "Other post")
+    st.markdown(f"**GPT suggestion:** {gpt_suggestion}")
+
     default_bucket = bucket_map.get(raw_bucket, "Other post")
     bucket = st.radio(
         "Assign this post to a bucket",
