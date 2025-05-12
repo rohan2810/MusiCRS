@@ -1,5 +1,6 @@
 import streamlit as st
 import json, re
+import hashlib
 from pathlib import Path
 from typing import List
 
@@ -62,7 +63,8 @@ def main():
     urls = extract_urls(sample.get("combined_text",""))
     kept_urls = []
     for url in urls:
-        keep = st.checkbox(f"{url}", value=True, key=f"url_{i}_{url}")
+        url_hash = hashlib.md5(url.encode()).hexdigest()
+        keep = st.checkbox(f"{url}", value=True, key=f"url_{i}_{url_hash}")
         if keep:
             st.write(f"[{url}]({url})")
             kept_urls.append(url)
