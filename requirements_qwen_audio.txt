@@ -1,0 +1,37 @@
+# Core dependencies for Qwen2-Audio model
+torch>=2.0.0
+torchaudio>=2.0.0
+transformers==4.56.0.dev0
+tokenizers>=0.21.0
+
+# Audio processing
+librosa>=0.11.0
+soundfile>=0.13.1
+audioread>=3.0.1
+
+# Data handling and processing
+numpy>=1.26.0
+pandas>=2.0.0
+safetensors>=0.5.0
+
+# ML utilities
+accelerate>=1.6.0
+datasets>=3.6.0
+huggingface-hub>=0.34.0
+
+# Logging and tracking
+wandb>=0.19.0
+tqdm>=4.66.0
+
+# Utilities
+pydub>=0.25.1
+pathspec>=0.10.0
+regex>=2024.9.0
+
+# Optional: For better performance
+flash-attn>=2.8.0
+bitsandbytes>=0.41.0
+
+# Development utilities
+jupyter>=1.0.0
+ipython>=8.0.0
