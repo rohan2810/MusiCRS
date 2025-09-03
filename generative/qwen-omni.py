@@ -579,15 +579,18 @@ def rank_songs_generative(
     )[0].strip()
 
     ranked = [s.strip() for s in text.split(",") if s.strip()]
+    # Filter to only valid candidates (in case of hallucinations)
+    valid_ranked = [song for song in ranked if song in candidates]
+    return valid_ranked  # May be shorter than candidates
 
-    # Sometimes the model might omit a few or reorder; fill in missing from original candidates
-    seen = set(ranked)
-    for c in original_candidates:  # Use original order for missing items
-        if c not in seen:
-            ranked.append(c)
+    # # Sometimes the model might omit a few or reorder; fill in missing from original candidates
+    # seen = set(ranked)
+    # for c in original_candidates:  # Use original order for missing items
+    #     if c not in seen:
+    #         ranked.append(c)
 
-    # Finally truncate to exactly match candidates length
-    return ranked[:len(candidates)]
+    # # Finally truncate to exactly match candidates length
+    # return ranked[:len(candidates)]
 
 
 def main():
@@ -598,7 +601,7 @@ def main():
     input_jsonl = "/home/junda/rohan/reddit-music/data/merged_final_cleaned_music_clean_queries_with_candidates_enhanced_v2_100_candidates.jsonl"
     
     # Configuration options
-    modes = ["query_only", "audio_only"]  # Options: ["query_only", "audio_query", "audio_only"]
+    modes = ["query_only", "audio_only", "audio_query"]  # Options: ["query_only", "audio_query", "audio_only"]
     ranking_methods = ["generative"]  # Options: ["reranking", "generative"]
     descriptions_options = [False]  # Test both with and without descriptions
     num_samples = -1  # Number of samples to process (-1 for all samples)
@@ -616,7 +619,7 @@ def main():
                 # Initialize separate wandb run for each method combination
 
                 wandb.init(
-                    project="reddit-music-qwen-omni",
+                    project="reddit-music-qwen-omni-new-eval",
                     name=f"{method_key}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
                     config={
                         "model_id": MODEL_ID,
@@ -626,7 +629,7 @@ def main():
                         "num_samples": num_samples,
                         "random_seed": 42,
                     },
-                    tags=["qwen2.5-omni", "music-ranking", ranking_method, mode, f"descriptions_{descriptions}"]
+                    tags=["qwen2.5-omni-new-eval", "music-ranking", ranking_method, mode, f"descriptions_{descriptions}"]
                 )
                 
                 method_results = {
@@ -635,7 +638,7 @@ def main():
                 }
                 
                 print(f"Processing {mode} mode with {ranking_method} method (descriptions: {descriptions})")
-                output_jsonl = f"/home/junda/rohan/reddit-music/generative/results/NEW_QWEN_OMNI/{ranking_method}_{mode}_descriptions_{descriptions}_100_candidates.jsonl"
+                output_jsonl = f"/home/junda/rohan/reddit-music/generative/results/NEW_QWEN_OMNI_NEW_EVALUATION/{ranking_method}_{mode}_descriptions_{descriptions}_100_candidates.jsonl"
                 output_dir = os.path.dirname(output_jsonl)
                 os.makedirs(output_dir, exist_ok=True)
 
@@ -751,7 +754,7 @@ def main():
               f"MRR={final_metrics.get('mrr', 0):.4f}")
         print()
     
-    print(f"📊 View individual runs in wandb project: reddit-music-qwen-omni")
+    print(f"📊 View individual runs in wandb project: reddit-music-qwen-omni-new-eval")
 
 
 if __name__ == "__main__":
