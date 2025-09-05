@@ -293,9 +293,6 @@ def load_and_mix_audio(
     num_clips_to_use = min(num_available, max_clips)
     clip_duration = audio_budget_secs / num_clips_to_use if num_clips_to_use > 0 else 30.0
     
-    print(f"Audio budget: {audio_budget_secs}s, Available clips: {num_available}, "
-          f"Using: {num_clips_to_use} clips, {clip_duration:.1f}s each")
-
     clips = []
     selected_paths = random.sample(wav_paths, k=num_clips_to_use)
     
@@ -354,8 +351,6 @@ def build_ranking_prompt(
     convo: str,
     candidates: List[str],
     mode: str,
-    include_descriptions: bool = False,
-    summaries: Optional[Dict[str, str]] = None,
     shuffle_candidates: bool = True
 ) -> Tuple[str, List[str]]:
     """
@@ -365,8 +360,6 @@ def build_ranking_prompt(
         convo: Query/conversation text
         candidates: List of candidate song names
         mode: Input mode ("query_only", "audio_only", "audio_query")
-        include_descriptions: Whether to include song descriptions
-        summaries: Dictionary mapping song names to descriptions
         shuffle_candidates: Whether to randomize candidate order (reduces bias)
         
     Returns:
@@ -386,25 +379,18 @@ def build_ranking_prompt(
     if mode in ("audio_query", "query_only") and convo:
         parts.append(convo.strip())
     
-    # Add candidate list with optional descriptions
-    if include_descriptions and summaries:
-        header = f"Here are {len(randomized_candidates)} candidate songs with descriptions; rank by relevance:"
-        parts.append(header)
-        for candidate in randomized_candidates:
-            desc = summaries.get(candidate, 'No description available.')[:200].strip()
-            parts.append(f"- {candidate}: {desc}")
-    else:
-        header = f"Here are {len(randomized_candidates)} candidate songs; rank by relevance:"
-        parts.append(header)
-        for candidate in randomized_candidates:
-            parts.append(f"- {candidate}")
+
+    header = f"Here are {len(randomized_candidates)} candidate songs; rank most relevant first:"
+    parts.append(header)
+    for candidate in randomized_candidates:
+        parts.append(f"- {candidate}")
     
     # Add instruction
     context_desc = "the audio" if mode == "audio_only" else "the audio and query" if mode == "audio_query" else "the query"
     instruction = (
         f"Rank these {len(randomized_candidates)} songs from most to least relevant based on {context_desc}. "
-        "Output ONLY the exact song titles separated by commas. "
-        "Example format: Song Title A, Song Title B, Song Title C"
+        "Output ONLY the exact song titles separated by commas. Do not include numbers or extra text. "
+        "Example format: Song Title A, Song Title B, Song Title C."
     )
     parts.append(instruction)
     

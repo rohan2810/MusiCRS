@@ -101,7 +101,7 @@ def rank_songs_generative(
     randomized_candidates = candidates.copy()
     random.shuffle(randomized_candidates)
 
-    sys_msg = {"role": "system", "content": "You are a helpful music recommendation expert. Rank songs based on relevance to the audio and query."}
+    sys_msg = {"role": "system", "content": "You are a helpful music recommendation expert. Rank songs based on relevance to the audio or query."}
     
     user_content: list[dict] = []
     if mode in ("audio_query", "audio_only"):
@@ -111,15 +111,16 @@ def rank_songs_generative(
     
     user_q = {"role": "user", "content": user_content}
 
-    header = f"Here are {len(randomized_candidates)} candidate songs; rank most relevant first based on the query:"
+    header = f"Here are {len(randomized_candidates)} candidate songs; rank most relevant first:"
     lines = [header] + [f"- {c}" for c in randomized_candidates]
 
     cand_blob = "\n".join(lines)
 
+    context_desc = "the audio" if mode == "audio_only" else "the audio and query" if mode == "audio_query" else "the query"
     instr = (
-        f"Rank these {len(randomized_candidates)} songs from most to least relevant based on the audio and query. "
+        f"Rank these {len(randomized_candidates)} songs from most to least relevant based on {context_desc}. "
         "Output ONLY the exact song titles separated by commas. Do not include numbers or extra text. "
-        "Example format: Song Title A, Song Title B, Song Title C"
+        "Example format: Song Title A, Song Title B, Song Title C."
     )
 
     cand_msg = {"role": "user", "content": [{"type": "text", "text": cand_blob}]}
