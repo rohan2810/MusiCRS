@@ -380,19 +380,18 @@ def build_ranking_prompt(
         parts.append(convo.strip())
     
 
-    header = f"Here are {len(randomized_candidates)} candidate songs; rank most relevant first:"
+    header = f"Here are {len(randomized_candidates)} candidate songs; rank by relevance:"
     parts.append(header)
     for candidate in randomized_candidates:
         parts.append(f"- {candidate}")
     
     # Add instruction
-    context_desc = "the audio" if mode == "audio_only" else "the audio and query" if mode == "audio_query" else "the query"
-    instruction = (
-        f"Rank these {len(randomized_candidates)} songs from most to least relevant based on {context_desc}. "
-        "Output ONLY the exact song titles separated by commas. Do not include numbers or extra text. "
-        "Example format: Song Title A, Song Title B, Song Title C."
+    instr = (
+        f"Rank these {len(randomized_candidates)} songs from most to least relevant based on the audio and query. "
+        "Output ONLY the exact song titles separated by commas. "
+        "Example format: Song Title A, Song Title B, Song Title C"
     )
-    parts.append(instruction)
+    parts.append(instr)
     
     prompt_text = "\n".join(parts)
     return prompt_text, randomized_candidates
@@ -418,30 +417,36 @@ def parse_and_filter_ranking(
     """
     # Parse comma-separated output
     raw_ranked = [s.strip() for s in model_output.split(",") if s.strip()]
-    
+    seen = set(raw_ranked)
+    for c in candidates:  # Use original order for missing items
+        if c not in seen:
+            raw_ranked.append(c)
+
+    # Finally truncate to exactly match candidates length
+    return raw_ranked[:len(candidates)]    
     # Create normalized mapping from candidates to original candidates
-    candidate_map = {normalize_string(c): c for c in candidates}
+    # candidate_map = {normalize_string(c): c for c in candidates}
     
-    # Map model outputs to actual candidates, drop non-matching items
-    mapped_ranked = []
-    seen_candidates = set()
+    # # Map model outputs to actual candidates, drop non-matching items
+    # mapped_ranked = []
+    # seen_candidates = set()
     
-    for item in raw_ranked:
-        normalized_item = normalize_string(item)
-        if normalized_item in candidate_map:
-            actual_candidate = candidate_map[normalized_item]
-            if actual_candidate not in seen_candidates:
-                mapped_ranked.append(actual_candidate)
-                seen_candidates.add(actual_candidate)
+    # for item in raw_ranked:
+    #     normalized_item = normalize_string(item)
+    #     if normalized_item in candidate_map:
+    #         actual_candidate = candidate_map[normalized_item]
+    #         if actual_candidate not in seen_candidates:
+    #             mapped_ranked.append(actual_candidate)
+    #             seen_candidates.add(actual_candidate)
     
-    # Fill in missing candidates if requested
-    if fill_missing:
-        for candidate in candidates:
-            if candidate not in seen_candidates:
-                mapped_ranked.append(candidate)
+    # # Fill in missing candidates if requested
+    # if fill_missing:
+    #     for candidate in candidates:
+    #         if candidate not in seen_candidates:
+    #             mapped_ranked.append(candidate)
     
-    # Return exactly the number of candidates requested
-    return mapped_ranked[:len(candidates)]
+    # # Return exactly the number of candidates requested
+    # return mapped_ranked[:len(candidates)]
 
 
 # ===== DISPLAY UTILITIES =====

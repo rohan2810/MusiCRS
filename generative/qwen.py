@@ -101,7 +101,7 @@ def rank_songs_generative(
     randomized_candidates = candidates.copy()
     random.shuffle(randomized_candidates)
 
-    sys_msg = {"role": "system", "content": "You are a helpful music recommendation expert. Rank songs based on relevance to the audio or query."}
+    sys_msg = {"role": "system", "content": "You are a helpful music recommendation expert. Rank songs based on relevance to the audio and query."}
     
     user_content: list[dict] = []
     if mode in ("audio_query", "audio_only"):
@@ -111,16 +111,15 @@ def rank_songs_generative(
     
     user_q = {"role": "user", "content": user_content}
 
-    header = f"Here are {len(randomized_candidates)} candidate songs; rank most relevant first:"
+    header = f"Here are {len(randomized_candidates)} candidate songs; rank by relevance:"
     lines = [header] + [f"- {c}" for c in randomized_candidates]
 
     cand_blob = "\n".join(lines)
 
-    context_desc = "the audio" if mode == "audio_only" else "the audio and query" if mode == "audio_query" else "the query"
     instr = (
-        f"Rank these {len(randomized_candidates)} songs from most to least relevant based on {context_desc}. "
-        "Output ONLY the exact song titles separated by commas. Do not include numbers or extra text. "
-        "Example format: Song Title A, Song Title B, Song Title C."
+        f"Rank these {len(randomized_candidates)} songs from most to least relevant based on the audio and query. "
+        "Output ONLY the exact song titles separated by commas. "
+        "Example format: Song Title A, Song Title B, Song Title C"
     )
 
     cand_msg = {"role": "user", "content": [{"type": "text", "text": cand_blob}]}
@@ -179,14 +178,14 @@ def main():
     
     input_jsonl = "/home/junda/rohan/reddit-music/data/merged_final_cleaned_music_clean_queries_with_candidates_enhanced_v2_100_candidates.jsonl"
     
-    modes = ["audio_query", "audio_only", "query_only"]  # Options: ["query_only", "audio_query", "audio_only"]
+    modes = ["audio_only"]  # Options: ["query_only", "audio_query", "audio_only"]
     num_samples = -1  # Number of samples to process (-1 for all samples)
     
     all_method_results = {}
 
     for mode in modes:
         wandb.init(
-            project="reddit-music-qwen-audio-final",
+            project="reddit-music-qwen-audio-final-final",
             entity="musiCRS",
             name=f"{mode}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
             config={
@@ -195,7 +194,7 @@ def main():
                 "num_samples": num_samples,
                 "random_seed": 42,
             },
-            tags=["qwen2-audio-final", "music-ranking", mode]
+            tags=["qwen2-audio-final-final", "music-ranking", mode]
         )
         
         results = {
@@ -205,7 +204,7 @@ def main():
         }
         
         print(f"Processing {mode} mode")
-        output_jsonl = f"/home/junda/rohan/reddit-music/generative/results/QWEN_AUDIO_FINAL/{mode}.jsonl"
+        output_jsonl = f"/home/junda/rohan/reddit-music/generative/results/QWEN_AUDIO_FINAL_FINAL/{mode}.jsonl"
         output_dir = os.path.dirname(output_jsonl)
         os.makedirs(output_dir, exist_ok=True)
 
