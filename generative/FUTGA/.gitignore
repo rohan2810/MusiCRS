@@ -1,0 +1,5 @@
+wandb/
+__pycache__/
+*.pyc
+salomnn_7b.bin
+wandb/
