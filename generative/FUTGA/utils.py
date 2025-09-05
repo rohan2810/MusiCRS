@@ -402,7 +402,6 @@ def build_ranking_prompt(
     instr = (
         f"Rank these {len(randomized_candidates)} songs from most to least relevant based on the audio and query. "
         "Output ONLY the exact song titles separated by commas. "
-        "Example format: Song Title A, Song Title B, Song Title C"
     )
     parts.append(instr)
     
