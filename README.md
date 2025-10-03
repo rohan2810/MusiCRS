@@ -78,26 +78,16 @@ python generative/SALMONN-7B/cli_inference.py \
 
 ---
 
-## Authors
-
-Rohan Surana*, Amit Namburi*, Gagan Mundada*, Abhay Lal*, Zachary Novack, Julian McAuley, Junda Wu
-
-- *Equal contribution.
-
----
 
 ## Citation
 
 If you find MusiCRS useful, please cite:
 
-Surana, R., Namburi, A., Mundada, G., Lal, A., Novack, Z., McAuley, J., Wu, J. MusiCRS: Multimodal Music Conversational Recommendation System. 2025.
-
 ```bibtex
-@misc{MusiCRS2025,
-  title        = {MusiCRS: Multimodal Music Conversational Recommendation System},
-  author       = {Surana, Rohan and Namburi, Amit and Mundada, Gagan and Lal, Abhay and Novack, Zachary and McAuley, Julian and Wu, Junda},
-  year         = {2025},
-  howpublished = {\url{https://huggingface.co/datasets/rohan2810/MusiCRS}},
-  note         = {Equal contribution for authors marked *}
+@article{surana2025musicrs,
+  title={MusiCRS: Benchmarking Audio-Centric Conversational Recommendation},
+  author={Surana, Rohan and Namburi, Amit and Mundada, Gagan and Lal, Abhay and Novack, Zachary and McAuley, Julian and Wu, Junda},
+  journal={arXiv preprint arXiv:2509.19469},
+  year={2025}
 }
 ```
