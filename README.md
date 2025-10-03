@@ -5,7 +5,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2509.19469-b31b1b.svg)](https://arxiv.org/abs/2509.19469)
 [![Dataset](https://img.shields.io/badge/🤗%20Dataset-MusiCRS-yellow)](https://huggingface.co/datasets/rohan2810/MusiCRS)
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 **[Rohan Surana](https://www.linkedin.com/in/~rsurana/)¹** · **[Amit Namburi](https://namburiamit.com/)¹** · **[Gagan Mundada](https://www.linkedin.com/in/gaganmundada/)¹** · **[Abhay Lal](https://abhay-lal.me/)¹** · **[Zachary Novack](https://zacharynovack.github.io/)** · **[Julian McAuley](https://cseweb.ucsd.edu/~jmcauley/)** · **[Junda Wu](https://scholar.google.com/citations?user=_iKeQFwAAAAJ&hl=en&oi=ao)**
 
@@ -373,85 +373,36 @@ Our comprehensive benchmark reveals critical insights about current audio-centri
 
 ### Key Findings
 
-#### 1. **The Multimodal Integration Challenge**
+**🎯 The Multimodal Integration Challenge**: Current models often perform better with single modalities (audio-only OR query-only) than combined inputs, exposing fundamental limitations in cross-modal knowledge integration.
 
-**Critical Discovery**: Current multimodal models **struggle to effectively integrate audio and text**, often performing better with single modalities than combined inputs.
+**📊 Model Performance Comparison** (Recall@20 / nDCG@20):
 
-- **Best performance frequently occurs in single-modality settings** (audio-only OR query-only)
-- Models fail to ground abstract musical concepts in actual audio content
-- This exposes fundamental limitations in cross-modal knowledge integration
+| Model | Best Config | Recall@20 | nDCG@20 |
+|-------|-------------|-----------|---------|
+| **CLAP** (Retrieval) | Query-only | 22.71% | 15.90% |
+| **Qwen2.5-Omni** (Generative) | Combined | 21.49% | 16.21% |
+| **CoLLAP** (Retrieval) | Query-only | 20.85% | 14.14% |
+| **Phi-4-Multimodal** | Audio-only | 20.04% | 13.72% |
+| **SALMONN-7B** | Audio-only | 19.55% | 13.66% |
+| **Popularity Baseline** | N/A | 16.51% | 11.09% |
 
-**Example**: While models excel at dialogue semantics (text understanding), they cannot effectively leverage audio characteristics to refine recommendations.
+**🎵 Genre-Specific Performance** (Best Recall@20):
 
-#### 2. **Model Performance Comparison**
+| Genre | Performance | Best Model |
+|-------|-------------|------------|
+| Jazz | 28.09% | Qwen2.5-Omni (audio-only) |
+| Classical | 26.53% | Qwen2.5-Omni (combined) |
+| Metal | 26.42% | CLAP (audio-only) |
+| Hip-Hop | 25.12% | Phi-4 (audio-only) |
+| Pop | 23.38% | Qwen2.5-Omni (query-only) |
+| Electronic | 23.55% | SALMONN-7B (query-only) |
+| Indie | 22.95% | Phi-4 (audio-only) |
 
-| Model Type | Best Configuration | Recall@20 | nDCG@20 | Key Strengths |
-|------------|-------------------|-----------|---------|---------------|
-| **CLAP** (Retrieval) | Query-only | 22.71% | 15.90% | Strong audio-text alignment, efficient |
-| **CoLLAP** (Retrieval) | Query-only | 20.85% | 14.14% | Long-form audio understanding |
-| **Qwen2.5-Omni** (Generative) | Combined | 21.49% | 16.21% | Strong multimodal integration |
-| **Phi-4-Multimodal** (Generative) | Audio-only | 20.04% | 13.72% | Effective audio reasoning |
-| **SALMONN-7B** (Generative) | Audio-only | 19.55% | 13.66% | Audio perception capabilities |
-| **FUTGA** (Generative) | Audio-only | 19.25% | 12.84% | Fine-grained temporal understanding |
-| **Qwen2-Audio** (Generative) | Combined | 16.95% | 12.80% | Strong dialogue understanding |
-| **Popularity** (Traditional) | N/A | 16.51% | 11.09% | Surprisingly competitive baseline |
-| **Neighbourhood** (Traditional) | N/A | 14.72% | 9.30% | Collaborative filtering baseline |
-
-**Takeaway**: Retrieval-based models (CLAP, CoLLAP) currently outperform most generative audio-LLMs, though newer models like Qwen2.5-Omni and Phi-4 show competitive performance. This suggests ongoing progress in multimodal reasoning capabilities.
-
-#### 3. **Genre-Specific Performance Variation**
-
-Performance varies significantly across music genres:
-
-| Genre | Best Performance (Recall@20) | Model | Difficulty Level |
-|-------|------------------------------|-------|------------------|
-| **Classical** | 26.53% | Qwen2.5-Omni (combined) | ✅ Easier |
-| **Metal** | 26.42% | CLAP (audio-only) | ✅ Easier |
-| **Jazz** | 28.09% | Qwen2.5-Omni (audio-only) | ✅ Easiest |
-| **Hip-Hop** | 25.12% | Phi-4 (audio-only) | ⚠️ Medium |
-| **Pop** | 23.38% | Qwen2.5-Omni (query-only) | ⚠️ Medium |
-| **Electronic** | 23.55% | SALMONN-7B (query-only) | ⚠️ Medium |
-| **Indie** | 22.95% | Phi-4 (audio-only) | 🔴 Harder |
-
-**Analysis**:
-- **Jazz** shows strongest overall performance (up to 28%), likely due to distinctive musical features (instrumentation, improvisation patterns)
-- **Classical** and **Metal** also perform well (26%+), suggesting models can capture genre-specific characteristics
-- **Indie** presents the greatest challenge, possibly due to:
-  - Greater diversity in subgenres and styles
-  - Less distinctive audio characteristics
-  - More nuanced listener preferences beyond surface-level features
-
-#### 4. **The Audio Reasoning Gap**
-
-Our experiments reveal that **current systems rely heavily on textual signals** and struggle with:
-
-- **Rhythm and tempo matching**: Models cannot effectively match rhythmic patterns
-- **Timbral similarity**: Limited understanding of instrumental texture and tone color
-- **Production style**: Difficulty capturing mixing, mastering, and sonic aesthetics
-- **Musical structure**: Weak at recognizing compositional patterns
-
-**Evidence**: When audio-only mode is used, performance often drops significantly for generative models, while CLAP maintains stronger performance through dedicated audio-text pre-training.
-
-#### 5. **Practical Implications**
-
-For researchers and practitioners:
-
-1. **Genre matters**: Consider genre-specific model selection or fine-tuning
-2. **Multimodal ≠ Better**: Carefully evaluate whether combining modalities actually helps
-3. **Strong baselines**: Popularity-based methods are surprisingly effective (16.51% Recall@20)
-
-### Detailed Performance Metrics
-
-**Best Per-Genre Results** (Recall@20):
-
-- **Jazz**: Audio Flamingo 3 (audio-only) - 25.18%
-- **Classical**: Qwen2.5-Omni (combined) - 26.53%
-- **Hip-Hop**: Phi-4 (audio-only) - 25.12%
-- **Pop**: Qwen2.5-Omni (query-only) - 23.38%
-- **Electronic**: SALMONN-7B (query-only) - 23.55%
-- **Metal**: CLAP (audio-only) - 26.42%
-- **Indie**: Phi-4 (audio-only) - 22.95%
-
+**Key Takeaways**:
+- Retrieval models (CLAP, CoLLAP) generally outperform generative audio-LLMs
+- Genre significantly impacts performance (Jazz/Classical easier, Indie harder)
+- Current systems rely heavily on textual signals and struggle with audio-specific features (rhythm, timbre, production style)
+- Simple popularity baselines are surprisingly competitive (16.51% Recall@20)
 
 For comprehensive analysis, evaluation protocols, and additional experiments, see our **[full paper on arXiv](https://arxiv.org/abs/2509.19469)**.
 
@@ -489,7 +440,7 @@ If you use MusiCRS in your research, please cite our paper:
 
 ## 📜 License
 
-This project is licensed under the MIT License. See individual model directories for specific model licenses.
+This project is licensed under the [Creative Commons Attribution 4.0 International License (CC-BY-4.0)](https://creativecommons.org/licenses/by/4.0/). See individual model directories for specific model licenses.
 
 ---
 
