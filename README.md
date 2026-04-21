@@ -7,7 +7,7 @@
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
-**[Rohan Surana](https://www.linkedin.com/in/~rsurana/)¹** · **[Amit Namburi](https://namburiamit.com/)¹** · **[Gagan Mundada](https://www.linkedin.com/in/gaganmundada/)¹** · **[Abhay Lal](https://abhay-lal.me/)¹** · **[Zachary Novack](https://zacharynovack.github.io/)** · **[Julian McAuley](https://cseweb.ucsd.edu/~jmcauley/)** · **[Junda Wu](https://scholar.google.com/citations?user=_iKeQFwAAAAJ&hl=en&oi=ao)**
+**[Rohan Surana](https://rohan2810.github.io/)¹** · **[Amit Namburi](https://namburiamit.com/)¹** · **[Gagan Mundada](https://gaganvm.github.io/)¹** · **[Abhay Lal](https://abhay-lal.me/)¹** · **[Zachary Novack](https://zacharynovack.github.io/)** · **[Julian McAuley](https://cseweb.ucsd.edu/~jmcauley/)** · **[Junda Wu](https://scholar.google.com/citations?user=_iKeQFwAAAAJ&hl=en&oi=ao)**
 
 *University of California, San Diego*
 
